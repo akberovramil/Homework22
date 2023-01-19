@@ -1,8 +1,16 @@
 package com.example.recipe33.servises;
 
-public interface IngredientsServise {
-    public IngredientsServise addIngredients(IngredientsServise ingredients);
+import com.example.recipe33.model.IngredientsModel;
 
-    public IngredientsServise getIngredients(Long ingredientId);
+public interface IngredientsServise {
+    public long addIngredients(IngredientsModel ingredients);
+
+    public IngredientsModel getIngredients(Long id);
+
+    public void getAllRecipes();
+
+    public IngredientsModel editIngredient(Long id, IngredientsModel ingredientsModelNew);
+
+    public boolean deleteIngredient(Long id);
 
 }
