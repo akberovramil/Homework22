@@ -8,7 +8,7 @@ import java.util.Map;
 
 @Service
 public class RecipeServiseImpl implements RecipeServise {
-    Map<Long, RecipeModel> receipesMap = new HashMap<>();
+    private Map<Long, RecipeModel> receipesMap = new HashMap<>();
     private static Long recipeId = 1L;
     @Override
     public long addReсipe(RecipeModel receipe) {
@@ -20,44 +20,31 @@ public class RecipeServiseImpl implements RecipeServise {
 
     @Override
     public RecipeModel getRecipe(Long id) {
-        for (RecipeModel value : receipesMap.values()) {
-            RecipeModel recipeModel = receipesMap.get(id);
-            if (recipeModel != null) {
-                return recipeModel;
+        {
+            if (receipesMap.containsKey(id)) {
+                return receipesMap.get(id);
             }
+            return null;
         }
-        return null;
     }
 
     @Override
     public void getAllRecipes() {
-        receipesMap = new HashMap<>();
+       receipesMap = new HashMap<>();
     }
 
     @Override
     public RecipeModel editRecipe(Long id, RecipeModel recipeModelNew) {
-        for (Map.Entry<Long, RecipeModel> recipeModelEntry : receipesMap.entrySet()) {
-            RecipeModel recipeModel1 = receipesMap.get(id);
-            if (recipeModel1 != null) {
-                recipeModelEntry.setValue(recipeModel1);
-                receipesMap.put(id, recipeModelNew);
-                return recipeModelNew;
-            }
+        if (receipesMap.containsKey(id)) {
+            return receipesMap.put(recipeId, recipeModelNew);
         }
         return null;
     }
 
-
-
     @Override
     public boolean deleteRecipe(Long id) {
-        for (Map.Entry<Long, RecipeModel> recipeModelEntry : receipesMap.entrySet()) {
-            RecipeModel recipeModel = receipesMap.get(id);
-            if (recipeModel != null) {
-                receipesMap.remove(id, recipeModel);
-                return true;
-            }
-            }
-        return false;
+        var removed = receipesMap.remove(id);
+        return removed != null;
     }
-}
+            }
+

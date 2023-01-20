@@ -33,9 +33,9 @@ public class IngredientsController {
     }
 
     @GetMapping
-    public ResponseEntity<IngredientsModel> getAllIngredients() {
+    public ResponseEntity<IngredientsServiseImpl> getAllIngredients() {
         ingredientsServise.getAllRecipes();
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(ingredientsServise);
     }
 
     @PutMapping("/{id}")
@@ -55,11 +55,4 @@ public class IngredientsController {
         }
         return ResponseEntity.notFound().build();
     }
-
-
-
-
-
-
-
 }

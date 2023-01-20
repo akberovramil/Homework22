@@ -31,9 +31,9 @@ public class RecipesController {
     }
 
     @GetMapping
-    public ResponseEntity<RecipeModel> getAllRecipes() {
+    public ResponseEntity<RecipeServiseImpl> getAllRecipes() {
         recipeServise.getAllRecipes();
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(recipeServise);
     }
 
     @PutMapping("/{id}")
