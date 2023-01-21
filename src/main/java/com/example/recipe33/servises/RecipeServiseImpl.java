@@ -3,6 +3,8 @@ package com.example.recipe33.servises;
 import com.example.recipe33.model.RecipeModel;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,17 +22,12 @@ public class RecipeServiseImpl implements RecipeServise {
 
     @Override
     public RecipeModel getRecipe(Long id) {
-        {
-            if (receipesMap.containsKey(id)) {
                 return receipesMap.get(id);
-            }
-            return null;
-        }
     }
 
     @Override
-    public void getAllRecipes() {
-       receipesMap = new HashMap<>();
+    public Collection<RecipeModel> getAllRecipe(){
+        return receipesMap.values();
     }
 
     @Override

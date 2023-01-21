@@ -4,6 +4,7 @@ import com.example.recipe33.model.IngredientsModel;
 import com.example.recipe33.model.RecipeModel;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,17 +22,13 @@ public class IngredientsServiseImpl implements IngredientsServise {
     }
 
     @Override
-    public IngredientsModel getIngredients(Long id)
-    {
-        if (ingredientsMap.containsKey(id)) {
+    public IngredientsModel getIngredients(Long id) {
             return ingredientsMap.get(id);
-        }
-        return null;
     }
 
     @Override
-    public void getAllRecipes() {
-        ingredientsMap = new HashMap<>();
+    public Collection<IngredientsModel> getAllIngredients() {
+        return ingredientsMap.values();
     }
 
     @Override

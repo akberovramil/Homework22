@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDate;
 
 @RestController
-public class FistController {
+public class FirstController {
 
     @GetMapping
     public String launchApp() {
