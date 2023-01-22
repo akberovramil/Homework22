@@ -71,6 +71,4 @@ public class RecipesController {
         }
         return ResponseEntity.notFound().build();
     }
-
-
 }

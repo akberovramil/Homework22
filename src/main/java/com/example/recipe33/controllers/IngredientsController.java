@@ -15,6 +15,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
+
 @RestController
 @RequestMapping("/ingredients")
 @Tag(name = "Ингредиенты", description = "CRUD-операции и другие эндпоинты для работы с ингредиентами")
@@ -48,10 +50,8 @@ public class IngredientsController {
             summary = "Список всех ингредиентов"
     )
 
-    public ResponseEntity<IngredientsServiseImpl> getAllIngredients() {
-
-        ingredientsServise.getAllIngredients();
-        return ResponseEntity.ok(ingredientsServise);
+    public ResponseEntity<Collection> getAllIngredients() {
+        return ResponseEntity.ok(ingredientsServise.getAllIngredients());
     }
 
     @PutMapping("/{id}")
