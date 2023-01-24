@@ -1,21 +1,44 @@
 package com.example.recipe33.servises;
 
 import com.example.recipe33.model.RecipeModel;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 @Service
 public class RecipeServiseImpl implements RecipeServise {
+
+    @Value("${name.of.recipes.data.file}")
+    private String dataFileNme;
+
+     private final FilesServise filesServise;
     private Map<Long, RecipeModel> receipesMap = new HashMap<>();
     private static Long recipeId = 1L;
+
+    public RecipeServiseImpl(FilesServise filesServise) {
+        this.filesServise = filesServise;
+    }
+
+
+
+    @PostConstruct
+    private void init() {
+        readFromFile();
+    }
+
+
     @Override
     public long addReсipe(RecipeModel receipe) {
         Map<Long, RecipeModel> recipes = receipesMap;
         recipes.put(recipeId, receipe);
+        saveToFile();
         receipesMap.put(recipeId, receipe);
         return recipeId++;
     }
@@ -33,7 +56,9 @@ public class RecipeServiseImpl implements RecipeServise {
     @Override
     public RecipeModel editRecipe(Long id, RecipeModel recipeModelNew) {
         if (receipesMap.containsKey(id)) {
-            return receipesMap.put(recipeId, recipeModelNew);
+            receipesMap.put(recipeId, recipeModelNew);
+            saveToFile();
+            return receipesMap.get(id);
         }
         return null;
     }
@@ -43,5 +68,26 @@ public class RecipeServiseImpl implements RecipeServise {
         var removed = receipesMap.remove(id);
         return removed != null;
     }
+
+    private void saveToFile() {
+        try {
+            String json = new ObjectMapper().writeValueAsString(receipesMap);
+            filesServise.saveToFile(json, dataFileNme);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    private void readFromFile() {
+        String json = filesServise.readFromFile(dataFileNme);
+        try {
+            receipesMap = new ObjectMapper().readValue(json, new TypeReference<Map<Long, RecipeModel>>() {
+            });
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
             }
 

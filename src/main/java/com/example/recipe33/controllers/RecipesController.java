@@ -8,13 +8,16 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.util.Collection;
+
 @RestController
 @RequestMapping("/receipes")
 @Tag(name = "Рецепты", description = "CRUD-операции и другие эндпоинты для работы с рецептами")
 public class RecipesController {
-    private final RecipeServiseImpl recipeServise;
+    private final RecipeServise recipeServise;
 
-    public RecipesController(RecipeServiseImpl recipeServise) {
+    public RecipesController(RecipeServise recipeServise) {
         this.recipeServise = recipeServise;
     }
 
@@ -43,9 +46,8 @@ public class RecipesController {
     @Operation(
             summary = "Список всех рецептов"
     )
-    public ResponseEntity<RecipeServiseImpl> getAllRecipes() {
-        recipeServise.getAllRecipe();
-        return ResponseEntity.ok(recipeServise);
+    public ResponseEntity<Collection> getAllRecipes() {
+        return ResponseEntity.ok(recipeServise.getAllRecipe());
     }
 
     @PutMapping("/{id}")
