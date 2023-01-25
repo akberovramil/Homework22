@@ -7,6 +7,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +20,7 @@ import java.util.Map;
 public class IngredientsServiseImpl implements IngredientsServise {
 
     @Value("${name.of.ingredients.data.file}")
-    private String dataFileNme;
+    private String dataFileName;
 
     private final FilesServise filesServise;
 
@@ -26,13 +31,16 @@ public class IngredientsServiseImpl implements IngredientsServise {
         this.filesServise = filesServise;
     }
 
+    @PostConstruct
+    private void init() {
+        readFromFile();
+    }
+
 
     @Override
     public long addIngredients(IngredientsModel ingredients) {
-        Map<Long, IngredientsModel> ingredientsMapNew = ingredientsMap;
-        ingredientsMapNew.put(ingredientId, ingredients);
-        saveToFile();
         ingredientsMap.put(ingredientId, ingredients);
+        saveToFile();
         return ingredientId++;
     }
 
@@ -64,19 +72,29 @@ public class IngredientsServiseImpl implements IngredientsServise {
     private void saveToFile() {
         try {
             String json = new ObjectMapper().writeValueAsString(ingredientsMap);
-            filesServise.saveToFile(json,dataFileNme);
+            filesServise.saveToFile(json, dataFileName);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
     }
 
     private void readFromFile() {
-        String json = filesServise.readFromFile(dataFileNme);
-        try {
-            ingredientsMap = new ObjectMapper().readValue(json, new TypeReference<Map<Long, IngredientsModel>>() {
-            });
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+        File file = new File(dataFileName);
+        if (file.exists()) {
+            String json = filesServise.readFromFile(dataFileName);
+            try {
+                ingredientsMap = new ObjectMapper().readValue(json, new TypeReference<Map<Long, IngredientsModel>>() {
+                });
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            try {
+                throw new FileNotFoundException();
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            }
         }
+
     }
 }

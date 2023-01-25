@@ -9,7 +9,7 @@ import java.nio.file.Path;
 
 @Service
 public class FilesServiseImpl implements FilesServise {
-    @Value("${path.to.data.file}")
+    @Value("${path.to.data.dir}")
     private String dataFilePath;
 
     @Override

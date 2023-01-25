@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,10 +38,8 @@ public class RecipeServiseImpl implements RecipeServise {
 
     @Override
     public long addReсipe(RecipeModel receipe) {
-        Map<Long, RecipeModel> recipes = receipesMap;
-        recipes.put(recipeId, receipe);
-        saveToFile();
         receipesMap.put(recipeId, receipe);
+        saveToFile();
         return recipeId++;
     }
 
@@ -80,14 +80,22 @@ public class RecipeServiseImpl implements RecipeServise {
 
 
     private void readFromFile() {
-        String json = filesServise.readFromFile(dataFileNme);
-        try {
-            receipesMap = new ObjectMapper().readValue(json, new TypeReference<Map<Long, RecipeModel>>() {
-            });
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+        File file = new File(dataFileNme);
+        if (file.exists()) {
+            String json = filesServise.readFromFile(dataFileNme);
+            try {
+                receipesMap = new ObjectMapper().readValue(json, new TypeReference<Map<Long, RecipeModel>>() {
+                });
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+        } else{
+            try {
+                throw new FileNotFoundException();
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            }
         }
-    }
-
+        }
             }
 

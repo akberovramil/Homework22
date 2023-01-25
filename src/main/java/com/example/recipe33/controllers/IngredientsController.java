@@ -21,7 +21,7 @@ import java.util.Collection;
 @RequestMapping("/ingredients")
 @Tag(name = "Ингредиенты", description = "CRUD-операции и другие эндпоинты для работы с ингредиентами")
 public class IngredientsController {
-    public IngredientsServise ingredientsServise;
+    private final IngredientsServise ingredientsServise;
 
     public IngredientsController(IngredientsServise ingredientsServise) {
         this.ingredientsServise = ingredientsServise;
