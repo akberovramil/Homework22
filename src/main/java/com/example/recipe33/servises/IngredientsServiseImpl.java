@@ -9,12 +9,12 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.io.FileNotFoundException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 @Service
 public class IngredientsServiseImpl implements IngredientsServise {
@@ -72,7 +72,7 @@ public class IngredientsServiseImpl implements IngredientsServise {
     private void saveToFile() {
         try {
             String json = new ObjectMapper().writeValueAsString(ingredientsMap);
-            filesServise.saveToFile(json, dataFileName);
+            filesServise.saveToFile(json);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -81,20 +81,20 @@ public class IngredientsServiseImpl implements IngredientsServise {
     private void readFromFile() {
         File file = new File(dataFileName);
         if (file.exists()) {
-            String json = filesServise.readFromFile(dataFileName);
+            String json = filesServise.readFromFile();
             try {
                 ingredientsMap = new ObjectMapper().readValue(json, new TypeReference<Map<Long, IngredientsModel>>() {
                 });
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
             }
-        } else {
+        }/* else {
             try {
                 throw new FileNotFoundException();
             } catch (FileNotFoundException e) {
                 throw new RuntimeException(e);
             }
-        }
+        }*/
 
     }
 }

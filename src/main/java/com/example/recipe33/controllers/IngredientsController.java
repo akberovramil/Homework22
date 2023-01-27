@@ -3,6 +3,7 @@ package com.example.recipe33.controllers;
 
 import com.example.recipe33.model.IngredientsModel;
 import com.example.recipe33.model.RecipeModel;
+import com.example.recipe33.servises.FilesServise;
 import com.example.recipe33.servises.IngredientsServise;
 import com.example.recipe33.servises.IngredientsServiseImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,15 +13,24 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.apache.commons.io.IOUtils;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Collection;
 
 @RestController
 @RequestMapping("/ingredients")
 @Tag(name = "Ингредиенты", description = "CRUD-операции и другие эндпоинты для работы с ингредиентами")
 public class IngredientsController {
+
+    private FilesServise filesServise;
     private final IngredientsServise ingredientsServise;
 
     public IngredientsController(IngredientsServise ingredientsServise) {
@@ -77,4 +87,18 @@ public class IngredientsController {
         }
         return ResponseEntity.notFound().build();
     }
+
+    @PostMapping(value = "/import", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Void> uploadRecipes(@RequestParam MultipartFile file) {
+        filesServise.cleanDataFile();
+        File dataFile = filesServise.getDataFile();
+        try (FileOutputStream fos = new FileOutputStream(dataFile)) {
+            IOUtils.copy(file.getInputStream(), fos);
+            return ResponseEntity.ok().build();
+        }  catch (IOException e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+
 }

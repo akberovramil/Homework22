@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,16 +17,15 @@ import java.util.Map;
 public class RecipeServiseImpl implements RecipeServise {
 
     @Value("${name.of.recipes.data.file}")
-    private String dataFileNme;
+    private String dataFileName;
 
-     private final FilesServise filesServise;
+    private final FilesServise filesServise;
     private Map<Long, RecipeModel> receipesMap = new HashMap<>();
     private static Long recipeId = 1L;
 
     public RecipeServiseImpl(FilesServise filesServise) {
         this.filesServise = filesServise;
     }
-
 
 
     @PostConstruct
@@ -45,11 +43,13 @@ public class RecipeServiseImpl implements RecipeServise {
 
     @Override
     public RecipeModel getRecipe(Long id) {
-                return receipesMap.get(id);
+        return receipesMap.get(id);
     }
 
+
+
     @Override
-    public Collection<RecipeModel> getAllRecipe(){
+    public Collection<RecipeModel> getAllRecipe() {
         return receipesMap.values();
     }
 
@@ -72,7 +72,7 @@ public class RecipeServiseImpl implements RecipeServise {
     private void saveToFile() {
         try {
             String json = new ObjectMapper().writeValueAsString(receipesMap);
-            filesServise.saveToFile(json, dataFileNme);
+            filesServise.saveToFile(json);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -80,22 +80,16 @@ public class RecipeServiseImpl implements RecipeServise {
 
 
     private void readFromFile() {
-        File file = new File(dataFileNme);
+        File file = new File(dataFileName);
         if (file.exists()) {
-            String json = filesServise.readFromFile(dataFileNme);
+            String json = filesServise.readFromFile();
             try {
                 receipesMap = new ObjectMapper().readValue(json, new TypeReference<Map<Long, RecipeModel>>() {
                 });
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
             }
-        } else{
-            try {
-                throw new FileNotFoundException();
-            } catch (FileNotFoundException e) {
-                throw new RuntimeException(e);
-            }
         }
-        }
-            }
+    }
+}
 

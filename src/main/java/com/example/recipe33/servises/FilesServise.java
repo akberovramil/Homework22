@@ -1,7 +1,18 @@
 package com.example.recipe33.servises;
 
-public interface FilesServise {
-    boolean saveToFile(String json, String dataFileName);
+import java.io.File;
+import java.nio.file.Path;
 
-    String readFromFile(String dataFileName);
+public interface FilesServise {
+    boolean saveToFile(String json);
+
+    String readFromFile();
+
+
+    File getDataFile();
+
+    Path createTempFile(String suffix);
+
+
+    boolean cleanDataFile();
 }
