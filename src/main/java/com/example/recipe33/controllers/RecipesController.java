@@ -3,7 +3,6 @@ package com.example.recipe33.controllers;
 import com.example.recipe33.model.RecipeModel;
 import com.example.recipe33.servises.FilesServise;
 import com.example.recipe33.servises.RecipeServise;
-import com.example.recipe33.servises.RecipeServiseImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.commons.io.IOUtils;
@@ -15,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.Valid;
 import java.io.*;
 import java.util.Collection;
 
@@ -25,8 +23,9 @@ import java.util.Collection;
 public class RecipesController {
     private final RecipeServise recipeServise;
 
-    public RecipesController(RecipeServise recipeServise) {
+    public RecipesController(RecipeServise recipeServise, FilesServise filesServise) {
         this.recipeServise = recipeServise;
+        this.filesServise = filesServise;
     }
 
     private FilesServise filesServise;

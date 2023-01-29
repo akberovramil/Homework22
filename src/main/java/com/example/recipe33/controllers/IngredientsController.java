@@ -2,16 +2,9 @@ package com.example.recipe33.controllers;
 
 
 import com.example.recipe33.model.IngredientsModel;
-import com.example.recipe33.model.RecipeModel;
 import com.example.recipe33.servises.FilesServise;
 import com.example.recipe33.servises.IngredientsServise;
-import com.example.recipe33.servises.IngredientsServiseImpl;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.commons.io.IOUtils;
 import org.springframework.http.HttpStatus;
@@ -33,7 +26,8 @@ public class IngredientsController {
     private FilesServise filesServise;
     private final IngredientsServise ingredientsServise;
 
-    public IngredientsController(IngredientsServise ingredientsServise) {
+    public IngredientsController(FilesServise filesServise, IngredientsServise ingredientsServise) {
+        this.filesServise = filesServise;
         this.ingredientsServise = ingredientsServise;
     }
 
