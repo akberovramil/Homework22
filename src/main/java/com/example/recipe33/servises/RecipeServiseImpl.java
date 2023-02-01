@@ -1,5 +1,7 @@
 package com.example.recipe33.servises;
 
+import com.example.recipe33.exceptions.ExceptionProject;
+import com.example.recipe33.model.IngredientsModel;
 import com.example.recipe33.model.RecipeModel;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -9,6 +11,11 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
+import java.io.IOException;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,10 +42,15 @@ public class RecipeServiseImpl implements RecipeServise {
 
 
     @Override
-    public long addReсipe(RecipeModel receipe) {
-        receipesMap.put(recipeId, receipe);
-        saveToFile();
-        return recipeId++;
+    public long addReсipe(RecipeModel receipe) throws ExceptionProject {
+        if (!receipesMap.containsValue(receipe)) {
+            receipesMap.put(recipeId, receipe);
+            saveToFile();
+            return recipeId++;
+        } else {
+            throw new ExceptionProject("Такой рецепт уже есть");
+        }
+
     }
 
     @Override
@@ -54,19 +66,25 @@ public class RecipeServiseImpl implements RecipeServise {
     }
 
     @Override
-    public RecipeModel editRecipe(Long id, RecipeModel recipeModelNew) {
+    public RecipeModel editRecipe(Long id, RecipeModel recipeModelNew) throws ExceptionProject {
         if (receipesMap.containsKey(id)) {
             receipesMap.put(recipeId, recipeModelNew);
             saveToFile();
             return receipesMap.get(id);
+        } else {
+            throw new ExceptionProject("Такого рецепта нет");
         }
-        return null;
     }
 
     @Override
-    public boolean deleteRecipe(Long id) {
-        var removed = receipesMap.remove(id);
-        return removed != null;
+    public boolean deleteRecipe(Long id) throws ExceptionProject {
+        if (receipesMap.containsKey(id)) {
+            var removed = receipesMap.remove(id);
+            return removed != null;
+        } else {
+            throw new ExceptionProject("Такого рецепта нет");
+        }
+
     }
 
     private void saveToFile() {
@@ -76,6 +94,32 @@ public class RecipeServiseImpl implements RecipeServise {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public Path createTextRecipe() throws IOException {
+        receipesMap.getOrDefault(recipeId, null);
+        Path textRecipies = filesServise.createTempFile("recipes_txt");
+        try (Writer writer = Files.newBufferedWriter(textRecipies, StandardCharsets.UTF_8)) {
+            for (RecipeModel recipe : receipesMap.values()) {
+                StringBuilder ingredients = new StringBuilder();
+                StringBuilder steps = new StringBuilder();
+                for (IngredientsModel ingredient : recipe.getIngredients()) {
+                    ingredients.append(ingredient).append(", \n");
+                }
+                for (String step : recipe.getSteps()) {
+                    steps.append("\n").append(step);
+                }
+                writer.append(recipe.getName()).append("\n").append("Время приготовления: ")
+                        .append(String.valueOf(recipe.getCookingTime())).append(" минут").append("\n")
+                        .append("Необходимые ингредиенты:\n")
+                        .append(ingredients.toString()).append(" Инструкция: ")
+                        .append(steps.toString());
+                writer.append("\n\n");
+            }
+
+        }
+        return textRecipies;
     }
 
 
@@ -91,5 +135,7 @@ public class RecipeServiseImpl implements RecipeServise {
             }
         }
     }
+
+
 }
 

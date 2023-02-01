@@ -16,5 +16,12 @@ public class IngredientsModel {
     @NonNull
     private String amount;
 
-
+    @Override
+    public String toString() {
+        return "IngredientsModel{" +
+                "name='" + name + '\'' +
+                ", numberOfIngredients=" + numberOfIngredients +
+                ", amount='" + amount + '\'' +
+                '}';
+    }
 }

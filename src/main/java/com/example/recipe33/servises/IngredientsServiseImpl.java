@@ -1,5 +1,6 @@
 package com.example.recipe33.servises;
 
+import com.example.recipe33.exceptions.ExceptionProject;
 import com.example.recipe33.model.IngredientsModel;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -38,15 +39,25 @@ public class IngredientsServiseImpl implements IngredientsServise {
 
 
     @Override
-    public long addIngredients(IngredientsModel ingredients) {
-        ingredientsMap.put(ingredientId, ingredients);
-        saveToFile();
-        return ingredientId++;
+    public long addIngredients(IngredientsModel ingredients) throws ExceptionProject {
+        if (!ingredientsMap.containsValue(ingredients)) {
+            ingredientsMap.put(ingredientId, ingredients);
+            saveToFile();
+            return ingredientId++;
+        } else {
+            throw new ExceptionProject("Такой ингредиент уже есть");
+        }
+
     }
 
     @Override
-    public IngredientsModel getIngredients(Long id) {
+    public IngredientsModel getIngredients(Long id) throws ExceptionProject {
+
+        if (ingredientsMap.containsKey(id)) {
             return ingredientsMap.get(id);
+        } else {
+            throw new ExceptionProject("Такого ингредиента нет");
+        }
     }
 
     @Override
@@ -55,18 +66,26 @@ public class IngredientsServiseImpl implements IngredientsServise {
     }
 
     @Override
-    public IngredientsModel editIngredient(Long id, IngredientsModel ingredientsModelNew) {
+    public IngredientsModel editIngredient(Long id, IngredientsModel ingredientsModelNew) throws ExceptionProject {
         if (ingredientsMap.containsKey(id)) {
             ingredientsMap.put(id, ingredientsModelNew);
             saveToFile();
             return ingredientsMap.get(id);
+        } else {
+            throw new ExceptionProject("Ингредиент нельзя редактировать, так как его нет");
         }
-        return null;
+
     }
 @Override
-    public boolean deleteIngredient(Long id) {
-    var removed = ingredientsMap.remove(id);
-    return removed != null;
+    public boolean deleteIngredient(Long id) throws ExceptionProject {
+
+    if (ingredientsMap.containsKey(id)) {
+        var removed = ingredientsMap.remove(id);
+        return removed != null;
+    } else {
+        throw new ExceptionProject("Ингредиент удалить нельзя, так как его нет");
+    }
+
     }
 
     private void saveToFile() {
@@ -88,13 +107,6 @@ public class IngredientsServiseImpl implements IngredientsServise {
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
             }
-        }/* else {
-            try {
-                throw new FileNotFoundException();
-            } catch (FileNotFoundException e) {
-                throw new RuntimeException(e);
-            }
-        }*/
-
+        }
     }
 }

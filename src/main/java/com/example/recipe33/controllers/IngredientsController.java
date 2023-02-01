@@ -1,6 +1,7 @@
 package com.example.recipe33.controllers;
 
 
+import com.example.recipe33.exceptions.ExceptionProject;
 import com.example.recipe33.model.IngredientsModel;
 import com.example.recipe33.servises.FilesServise;
 import com.example.recipe33.servises.IngredientsServise;
@@ -32,7 +33,7 @@ public class IngredientsController {
     }
 
     @PostMapping
-    public ResponseEntity<Long> addIngredient(@RequestBody IngredientsModel ingredient) {
+    public ResponseEntity<Long> addIngredient(@RequestBody IngredientsModel ingredient) throws ExceptionProject {
         long id = ingredientsServise.addIngredients(ingredient);
         return ResponseEntity.ok().body(id);
     }
@@ -41,7 +42,7 @@ public class IngredientsController {
     @Operation(
             summary = "Найти ингредиент по id"
     )
-    public ResponseEntity<IngredientsModel> getIngredient(@PathVariable Long id) {
+    public ResponseEntity<IngredientsModel> getIngredient(@PathVariable Long id) throws ExceptionProject {
         IngredientsModel ingredientsModel = ingredientsServise.getIngredients(id);
         if (ingredientsModel == null) {
             return ResponseEntity.notFound().build();
@@ -62,7 +63,7 @@ public class IngredientsController {
     @Operation(
             summary = "Редактировать ингредиент по id"
     )
-    public ResponseEntity<IngredientsModel> editIngredient(@PathVariable Long id, @RequestBody IngredientsModel ingredient) {
+    public ResponseEntity<IngredientsModel> editIngredient(@PathVariable Long id, @RequestBody IngredientsModel ingredient) throws ExceptionProject {
 
         IngredientsModel ingredientsModel = ingredientsServise.editIngredient(id, ingredient);
         if (ingredientsModel == null) {
@@ -75,7 +76,7 @@ public class IngredientsController {
     @Operation(
             summary = "Удалить ингредиент по id"
     )
-    public ResponseEntity<Void> deleteIngredient(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteIngredient(@PathVariable Long id) throws ExceptionProject {
         if (ingredientsServise.deleteIngredient(id)) {
             return ResponseEntity.ok().build();
         }
