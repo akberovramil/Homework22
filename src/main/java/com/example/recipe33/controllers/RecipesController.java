@@ -1,6 +1,6 @@
 package com.example.recipe33.controllers;
 
-import com.example.recipe33.exceptions.ExceptionProject;
+import com.example.recipe33.exceptions.ExceptionApp;
 import com.example.recipe33.model.RecipeModel;
 import com.example.recipe33.servises.FilesServise;
 import com.example.recipe33.servises.RecipeServise;
@@ -36,7 +36,7 @@ public class RecipesController {
     @Operation(
             summary = "Добавить рецепт"
     )
-    public ResponseEntity<Long> addReceipes(@RequestBody RecipeModel receipe) throws ExceptionProject {
+    public ResponseEntity<Long> addReceipes(@RequestBody RecipeModel receipe) throws ExceptionApp {
         long id = recipeServise.addReсipe(receipe);
         return ResponseEntity.ok().body(id);
     }
@@ -92,7 +92,7 @@ public class RecipesController {
     @Operation(
             summary = "Редактировать рецепт"
     )
-    public ResponseEntity<RecipeModel> editRecipe(@PathVariable Long id, @RequestBody RecipeModel recipeModel) throws ExceptionProject {
+    public ResponseEntity<RecipeModel> editRecipe(@PathVariable Long id, @RequestBody RecipeModel recipeModel) throws ExceptionApp {
 
         RecipeModel recipe = recipeServise.editRecipe(id, recipeModel);
         if (recipe == null) {
@@ -105,7 +105,7 @@ public class RecipesController {
     @Operation(
             summary = "Удалить рецепт"
     )
-    public ResponseEntity<Void> deleteRecipe(@PathVariable Long id) throws ExceptionProject {
+    public ResponseEntity<Void> deleteRecipe(@PathVariable Long id) throws ExceptionApp {
         if (recipeServise.deleteRecipe(id)) {
             return ResponseEntity.ok().build();
         }

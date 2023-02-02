@@ -1,6 +1,6 @@
 package com.example.recipe33.servises;
 
-import com.example.recipe33.exceptions.ExceptionProject;
+import com.example.recipe33.exceptions.ExceptionApp;
 import com.example.recipe33.model.IngredientsModel;
 import com.example.recipe33.model.RecipeModel;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -42,13 +42,13 @@ public class RecipeServiseImpl implements RecipeServise {
 
 
     @Override
-    public long addReсipe(RecipeModel receipe) throws ExceptionProject {
+    public long addReсipe(RecipeModel receipe) throws ExceptionApp {
         if (!receipesMap.containsValue(receipe)) {
             receipesMap.put(recipeId, receipe);
             saveToFile();
             return recipeId++;
         } else {
-            throw new ExceptionProject("Такой рецепт уже есть");
+            throw new ExceptionApp("Такой рецепт уже есть");
         }
 
     }
@@ -66,23 +66,23 @@ public class RecipeServiseImpl implements RecipeServise {
     }
 
     @Override
-    public RecipeModel editRecipe(Long id, RecipeModel recipeModelNew) throws ExceptionProject {
+    public RecipeModel editRecipe(Long id, RecipeModel recipeModelNew) throws ExceptionApp {
         if (receipesMap.containsKey(id)) {
             receipesMap.put(recipeId, recipeModelNew);
             saveToFile();
             return receipesMap.get(id);
         } else {
-            throw new ExceptionProject("Такого рецепта нет");
+            throw new ExceptionApp("Такого рецепта нет");
         }
     }
 
     @Override
-    public boolean deleteRecipe(Long id) throws ExceptionProject {
+    public boolean deleteRecipe(Long id) throws ExceptionApp {
         if (receipesMap.containsKey(id)) {
             var removed = receipesMap.remove(id);
             return removed != null;
         } else {
-            throw new ExceptionProject("Такого рецепта нет");
+            throw new ExceptionApp("Такого рецепта нет");
         }
 
     }

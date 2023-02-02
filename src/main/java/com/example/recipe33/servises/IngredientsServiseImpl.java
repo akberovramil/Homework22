@@ -1,6 +1,6 @@
 package com.example.recipe33.servises;
 
-import com.example.recipe33.exceptions.ExceptionProject;
+import com.example.recipe33.exceptions.ExceptionApp;
 import com.example.recipe33.model.IngredientsModel;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -13,9 +13,6 @@ import java.io.File;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.io.FileNotFoundException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 @Service
 public class IngredientsServiseImpl implements IngredientsServise {
@@ -39,24 +36,24 @@ public class IngredientsServiseImpl implements IngredientsServise {
 
 
     @Override
-    public long addIngredients(IngredientsModel ingredients) throws ExceptionProject {
+    public long addIngredients(IngredientsModel ingredients) throws ExceptionApp {
         if (!ingredientsMap.containsValue(ingredients)) {
             ingredientsMap.put(ingredientId, ingredients);
             saveToFile();
             return ingredientId++;
         } else {
-            throw new ExceptionProject("Такой ингредиент уже есть");
+            throw new ExceptionApp("Такой ингредиент уже есть");
         }
 
     }
 
     @Override
-    public IngredientsModel getIngredients(Long id) throws ExceptionProject {
+    public IngredientsModel getIngredients(Long id) throws ExceptionApp {
 
         if (ingredientsMap.containsKey(id)) {
             return ingredientsMap.get(id);
         } else {
-            throw new ExceptionProject("Такого ингредиента нет");
+            throw new ExceptionApp("Такого ингредиента нет");
         }
     }
 
@@ -66,24 +63,24 @@ public class IngredientsServiseImpl implements IngredientsServise {
     }
 
     @Override
-    public IngredientsModel editIngredient(Long id, IngredientsModel ingredientsModelNew) throws ExceptionProject {
+    public IngredientsModel editIngredient(Long id, IngredientsModel ingredientsModelNew) throws ExceptionApp {
         if (ingredientsMap.containsKey(id)) {
             ingredientsMap.put(id, ingredientsModelNew);
             saveToFile();
             return ingredientsMap.get(id);
         } else {
-            throw new ExceptionProject("Ингредиент нельзя редактировать, так как его нет");
+            throw new ExceptionApp("Ингредиент нельзя редактировать, так как его нет");
         }
 
     }
 @Override
-    public boolean deleteIngredient(Long id) throws ExceptionProject {
+    public boolean deleteIngredient(Long id) throws ExceptionApp {
 
     if (ingredientsMap.containsKey(id)) {
         var removed = ingredientsMap.remove(id);
         return removed != null;
     } else {
-        throw new ExceptionProject("Ингредиент удалить нельзя, так как его нет");
+        throw new ExceptionApp("Ингредиент удалить нельзя, так как его нет");
     }
 
     }
